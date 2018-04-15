@@ -7,9 +7,9 @@
     "jupyterlab",
     "jupyterlab-extension"
   ],
-  "homepage": "https://github.com/my_name/jupyterlab_myextension",
+  "homepage": "https://github.com/lsst-epo/jupyterlab_hidecode",
   "bugs": {
-    "url": "https://github.com/my_name/jupyterlab_myextension/issues"
+    "url": "https://github.com/lsst-epo/jupyterlab_hidecode/issues"
   },
   "license": "BSD-3-Clause",
   "author": "LSST-EPO",
@@ -21,7 +21,7 @@
   "types": "lib/index.d.ts",
   "repository": {
     "type": "git",
-    "url": "https://github.com/my_name/jupyterlab_myextension.git"
+    "url": "https://github.com/lsst-epo/jupyterlab_hidecode.git"
   },
   "scripts": {
     "build": "tsc",
