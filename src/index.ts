@@ -12,7 +12,6 @@ import {
   ICommandPalette
 } from '@jupyterlab/apputils';
 
-
 /**
  * Initialization data for the jupyterlab_hidecode extension.
  */
@@ -30,7 +29,7 @@ const extension: JupyterLabPlugin<void> = {
     widget.title.label = 'tab title';
     widget.title.closable = true;
       
-}
+
   
     // Add an application command
     const command: string = 'hidecode:hidecode';
@@ -38,7 +37,8 @@ const extension: JupyterLabPlugin<void> = {
         label: 'Hide The Code',
         execute: () => {
           console.log('Success!');
-          hideCode();
+          app.commands.execute('notebook:hide-all-cell-code');
+          
         }
       });
       // Add the command to the palette.
