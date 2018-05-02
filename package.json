@@ -33,6 +33,7 @@
   },
   "devDependencies": {
     "@jupyterlab/apputils": "^0.16.3",
+    "@jupyterlab/notebook": "*",
     "rimraf": "^2.6.1",
     "typescript": "^2.8.1"
   },
