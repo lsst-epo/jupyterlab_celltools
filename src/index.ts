@@ -30,7 +30,10 @@ const extension: JupyterLabPlugin<void> = {
       // checks metadata and executes 
         if (tracker.currentWidget.notebook.activeCell.model.metadata.get("hideCode") == "true") {
           app.commands.execute('notebook:hide-cell-code');   
-        } 
+        } else if (tracker.currentWidget.notebook.activeCell.model.metadata.get("readOnly") == "true") {
+          tracker.currentWidget.notebook.activeCell.node.style.pointerEvents = "none";
+          tracker.currentWidget.notebook.activeCell.node.style.cursor = "default";
+        }
         tracker.currentWidget.notebook.activeCellIndex++;
       }     
     }
@@ -38,8 +41,10 @@ const extension: JupyterLabPlugin<void> = {
 
   tracker.currentChanged.connect(() => { 
      setTimeout(executeActions, 100);
+     console.log(tracker.currentWidget.notebook.activeCell.node.style.color = "blue");
+     tracker.currentWidget.notebook.activeCell.node.style.pointerEvents = "none";
   });
-  setTimeout(executeActions, 1000); 
+  setTimeout(executeActions, 500); 
   }
 
 }
