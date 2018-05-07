@@ -22,31 +22,48 @@ const extension: JupyterLabPlugin<void> = {
   activate: (app: JupyterLab, palette: ICommandPalette, tracker: INotebookTracker) => {
   console.log('JupyterLab extension Hide The Code is activated!');
 
+
   function executeActions() {
-    // Active cell Number.
+    var cellMetadata = tracker.currentWidget.notebook.activeCell.model.metadata;
+    var cellCSS = tracker.currentWidget.notebook.activeCell.node.style;
+
+    // Active cell number.
     tracker.currentWidget.notebook.activeCellIndex = 0;
-    
+
     for (var i = 0; i < tracker.currentWidget.model.cells.length -1; i++) {
-      // checks metadata and executes 
-        if (tracker.currentWidget.notebook.activeCell.model.metadata.get("hideCode") == "true") {
+
+        if (cellMetadata.get("hideCode") == "true") {
           app.commands.execute('notebook:hide-cell-code');   
-        } else if (tracker.currentWidget.notebook.activeCell.model.metadata.get("readOnly") == "true") {
-          tracker.currentWidget.notebook.activeCell.node.style.pointerEvents = "none";
-          tracker.currentWidget.notebook.activeCell.node.style.cursor = "default";
+        } 
+        else if (cellMetadata.get("readOnly") == "true") {
+          // sets CSS pointer-events to none and cursor to default to make cell read only. 
+          cellCSS.pointerEvents = "none";
+          cellCSS.cursor = "default";
         }
         tracker.currentWidget.notebook.activeCellIndex++;
       }     
     }
 
-
+  // If the notebook changes, it runs. 
   tracker.currentChanged.connect(() => { 
      setTimeout(executeActions, 100);
-     console.log(tracker.currentWidget.notebook.activeCell.node.style.color = "blue");
-     tracker.currentWidget.notebook.activeCell.node.style.pointerEvents = "none";
   });
-  setTimeout(executeActions, 500); 
-  }
 
+  // Runs on pageload if notebook is already open
+  setTimeout(executeActions, 200); 
+
+  // Add an application command
+    const command: string = 'hidecode:hidecode';
+    app.commands.addCommand(command, {
+        label: 'Hide The Code',
+        execute: () => {
+         executeActions() 
+        }
+      });
+      // Add the command to the palette.
+      palette.addItem({command, category: 'Extensions'});
+
+  }
 }
 
 export default extension;
