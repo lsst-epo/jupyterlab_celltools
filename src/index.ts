@@ -23,23 +23,21 @@ const extension: JupyterLabPlugin<void> = {
   console.log('JupyterLab extension Hide The Code is activated!');
 
 
-  function executeActions() {
-    var cellMetadata = tracker.currentWidget.notebook.activeCell.model.metadata;
-    var cellCSS = tracker.currentWidget.notebook.activeCell.node.style;
+   function executeActions() {
+    // Active cell number.
+    tracker.currentWidget.notebook.activeCellIndex = 0;
 
+    for (var i = 0; i < tracker.currentWidget.model.cells.length -1; i++) {
 
-    for (var i = 0; i < tracker.currentWidget.model.cells.length; i++) {
-      
-        tracker.currentWidget.notebook.activeCellIndex = i;
-
-        if (cellMetadata.get("hideCode") == "true") {
+        if (tracker.currentWidget.notebook.activeCell.model.metadata.get("hideCode") == "true") {
           app.commands.execute('notebook:hide-cell-code');   
         } 
-        else if (cellMetadata.get("readOnly") == "true") {
+        else if (tracker.currentWidget.notebook.activeCell.model.metadata.get("readOnly") == "true") {
           // sets CSS pointer-events to none and cursor to default to make cell read only. 
-          cellCSS.pointerEvents = "none";
-          cellCSS.cursor = "default";
+          tracker.currentWidget.notebook.activeCell.node.style.pointerEvents = "none";
+          tracker.currentWidget.notebook.activeCell.node.style.cursor = "default";
         }
+        tracker.currentWidget.notebook.activeCellIndex++;
       }     
     }
 
@@ -49,7 +47,7 @@ const extension: JupyterLabPlugin<void> = {
   });
 
   // Runs on pageload if notebook is already open
-  setTimeout(executeActions, 300); 
+  setTimeout(executeActions, 400); 
 
   // Add an application command
     const command: string = 'hidecode:hidecode';
