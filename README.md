@@ -32,7 +32,7 @@ jupyter lab build
 
 To hide the cells code, add the following to the Metadata:
 
-```bash
+```json
 {
 	"hideCode": "true"
 }
@@ -40,7 +40,7 @@ To hide the cells code, add the following to the Metadata:
 
 To make cells read only, add the following to the Metadata:
 
-```bash
+```json
 {
 	"readOnly": "true"
 }
