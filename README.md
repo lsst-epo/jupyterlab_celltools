@@ -30,3 +30,18 @@ npm run build
 jupyter lab build
 ```
 
+To hide the cells code, add the following to the Metadata:
+
+```json
+{
+	"hideCode": "true"
+}
+```
+
+To make cells read only, add the following to the Metadata:
+
+```json
+{
+	"readOnly": "true"
+}
+```

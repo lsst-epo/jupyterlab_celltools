@@ -5,12 +5,12 @@ import {
 import '../style/index.css';
 
 import {
-  Widget
-} from '@phosphor/widgets';
-
-import {
   ICommandPalette
 } from '@jupyterlab/apputils';
+
+import {
+  INotebookTracker
+} from '@jupyterlab/notebook';
 
 /**
  * Initialization data for the jupyterlab_hidecode extension.
@@ -18,32 +18,49 @@ import {
 const extension: JupyterLabPlugin<void> = {
   id: 'jupyterlab_hidecode',
   autoStart: true,
-  requires: [ICommandPalette],
-  activate: (app: JupyterLab, palette: ICommandPalette) => {
+  requires: [ICommandPalette, INotebookTracker],
+  activate: (app: JupyterLab, palette: ICommandPalette, tracker: INotebookTracker) => {
   console.log('JupyterLab extension Hide The Code is activated!');
-  console.log('ICommandPalette:', palette);
-      
-    // Create a single widget
-    let widget: Widget = new Widget();
-    widget.id = 'hidecode-jupyterlab';
-    widget.title.label = 'tab title';
-    widget.title.closable = true;
-      
 
-  
-    // Add an application command
+
+   function executeActions() {
+    // Active cell number.
+    tracker.currentWidget.notebook.activeCellIndex = 0;
+
+    for (var i = 0; i < tracker.currentWidget.model.cells.length -1; i++) {
+
+        if (tracker.currentWidget.notebook.activeCell.model.metadata.get("hideCode") == "true") {
+          app.commands.execute('notebook:hide-cell-code');   
+        } 
+        else if (tracker.currentWidget.notebook.activeCell.model.metadata.get("readOnly") == "true") {
+          // sets CSS pointer-events to none and cursor to default to make cell read only. 
+          tracker.currentWidget.notebook.activeCell.node.style.pointerEvents = "none";
+          tracker.currentWidget.notebook.activeCell.node.style.cursor = "default";
+        }
+        tracker.currentWidget.notebook.activeCellIndex++;
+      }     
+    }
+
+  // If the notebook changes, it runs. 
+  tracker.currentChanged.connect(() => { 
+     setTimeout(executeActions, 100);
+  });
+
+  // Runs on pageload if notebook is already open
+  setTimeout(executeActions, 400); 
+
+  // Add an application command
     const command: string = 'hidecode:hidecode';
     app.commands.addCommand(command, {
         label: 'Hide The Code',
         execute: () => {
-          console.log('Success!');
-          app.commands.execute('notebook:hide-all-cell-code');
-          
+         executeActions() 
         }
       });
       // Add the command to the palette.
       palette.addItem({command, category: 'Extensions'});
-    }  
-};
+
+  }
+}
 
 export default extension;
