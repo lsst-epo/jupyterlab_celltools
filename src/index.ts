@@ -27,7 +27,7 @@ const extension: JupyterLabPlugin<void> = {
     // Active cell number.
     tracker.currentWidget.notebook.activeCellIndex = 0;
 
-    for (var i = 0; i < tracker.currentWidget.model.cells.length -1; i++) {
+    for (var i = 0; i < tracker.currentWidget.model.cells.length; i++) {
 
         if (tracker.currentWidget.notebook.activeCell.model.metadata.get("hideCode") == "true") {
           app.commands.execute('notebook:hide-cell-code');   
