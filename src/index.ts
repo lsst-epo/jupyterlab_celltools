@@ -53,6 +53,11 @@ const extension: JupyterLabPlugin<void> = {
      setTimeout(executeActions, 100);
   });
 
+  // When we open a notebook, it runs.
+  tracker.widgetAdded.connect(() => {
+     setTimeout(executeActions, 100);
+  });
+
   // Runs on pageload if notebook is already open
   setTimeout(executeActions, 100);
 
