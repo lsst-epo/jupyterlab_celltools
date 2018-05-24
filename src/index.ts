@@ -20,17 +20,35 @@ const extension: JupyterLabPlugin<void> = {
   autoStart: true,
   requires: [ICommandPalette, INotebookTracker],
   activate: (app: JupyterLab, palette: ICommandPalette, tracker: INotebookTracker) => {
-  console.log('JupyterLab extension Hide The Code is activated!');
+   console.log('JupyterLab extension Hide The Code is activated!');
 
 
    function executeActions() {
+    // If the notebook isn't loaded by the time we get run,
+    // reschedule us to run again.
+    if (tracker.currentWidget == null) {
+        console.log('Not ready to hide the code yet.');
+        setTimeout(executeActions, 100);
+        return;
+    }
+
+    // If there's just one cell, the notebook is still loading.
+    var numCells = tracker.currentWidget.model.cells.length;
+    if (numCells == 1) {
+        console.log('Only one cell, notebook is still loading.');
+        setTimeout(executeActions, 100);
+        return;
+    }
+
     // Active cell number.
+    console.log('Hiding the code for cells:', numCells);
+
     tracker.currentWidget.notebook.activeCellIndex = 0;
 
-    for (var i = 0; i < tracker.currentWidget.model.cells.length; i++) {
+    for (var i = 0; i < numCells; i++) {
 
         if (tracker.currentWidget.notebook.activeCell.model.metadata.get("hideCode") == "true") {
-          app.commands.execute('notebook:hide-cell-code');   
+          app.commands.execute('notebook:hide-cell-code');
         } 
         else if (tracker.currentWidget.notebook.activeCell.model.metadata.get("readOnly") == "true") {
           // sets CSS pointer-events to none and cursor to default to make cell read only. 
@@ -46,8 +64,10 @@ const extension: JupyterLabPlugin<void> = {
      setTimeout(executeActions, 100);
   });
 
-  // Runs on pageload if notebook is already open
-  setTimeout(executeActions, 400); 
+  // When open a notebook is opened, it runs.
+  tracker.widgetAdded.connect(() => {
+     setTimeout(executeActions, 100);
+  });
 
   // Add an application command
     const command: string = 'hidecode:hidecode';
