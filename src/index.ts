@@ -24,6 +24,13 @@ const extension: JupyterLabPlugin<void> = {
 
 
    function executeActions() {
+    // If the notebook isn't loaded by the time we get run,
+    // reschedule us to run again.
+    if (tracker.currentWidget == null) {
+        setTimeout(executeActions, 100);
+        return;
+    }
+
     // Active cell number.
     tracker.currentWidget.notebook.activeCellIndex = 0;
 
@@ -47,7 +54,7 @@ const extension: JupyterLabPlugin<void> = {
   });
 
   // Runs on pageload if notebook is already open
-  setTimeout(executeActions, 400); 
+  setTimeout(executeActions, 100);
 
   // Add an application command
     const command: string = 'hidecode:hidecode';
