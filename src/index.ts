@@ -24,20 +24,25 @@ const extension: JupyterLabPlugin<void> = {
 
 
    function executeActions() {
+    var numCells = tracker.currentWidget.model.cells.length;
+
     // If the notebook isn't loaded by the time we get run,
     // reschedule us to run again.
-    if (tracker.currentWidget == null) {
+    if (tracker.currentWidget == null || numCells == 1) {
+        console.log('Not ready to hide the code yet.');
         setTimeout(executeActions, 100);
         return;
     }
 
     // Active cell number.
+    console.log('Hiding the code for cells:', numCells);
+
     tracker.currentWidget.notebook.activeCellIndex = 0;
 
-    for (var i = 0; i < tracker.currentWidget.model.cells.length; i++) {
+    for (var i = 0; i < numCells; i++) {
 
         if (tracker.currentWidget.notebook.activeCell.model.metadata.get("hideCode") == "true") {
-          app.commands.execute('notebook:hide-cell-code');   
+          app.commands.execute('notebook:hide-cell-code');
         } 
         else if (tracker.currentWidget.notebook.activeCell.model.metadata.get("readOnly") == "true") {
           // sets CSS pointer-events to none and cursor to default to make cell read only. 
@@ -53,13 +58,10 @@ const extension: JupyterLabPlugin<void> = {
      setTimeout(executeActions, 100);
   });
 
-  // When we open a notebook, it runs.
+  // When open a notebook is opened, it runs.
   tracker.widgetAdded.connect(() => {
      setTimeout(executeActions, 100);
   });
-
-  // Runs on pageload if notebook is already open
-  setTimeout(executeActions, 100);
 
   // Add an application command
     const command: string = 'hidecode:hidecode';
