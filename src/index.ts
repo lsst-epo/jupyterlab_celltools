@@ -20,16 +20,22 @@ const extension: JupyterLabPlugin<void> = {
   autoStart: true,
   requires: [ICommandPalette, INotebookTracker],
   activate: (app: JupyterLab, palette: ICommandPalette, tracker: INotebookTracker) => {
-  console.log('JupyterLab extension Hide The Code is activated!');
+   console.log('JupyterLab extension Hide The Code is activated!');
 
 
    function executeActions() {
-    var numCells = tracker.currentWidget.model.cells.length;
-
     // If the notebook isn't loaded by the time we get run,
     // reschedule us to run again.
-    if (tracker.currentWidget == null || numCells == 1) {
+    if (tracker.currentWidget == null) {
         console.log('Not ready to hide the code yet.');
+        setTimeout(executeActions, 100);
+        return;
+    }
+
+    // If there's just one cell, the notebook is still loading.
+    var numCells = tracker.currentWidget.model.cells.length;
+    if (numCells == 1) {
+        console.log('Only one cell, notebook is still loading.');
         setTimeout(executeActions, 100);
         return;
     }
