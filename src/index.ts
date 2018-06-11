@@ -9,7 +9,8 @@ import {
 } from '@jupyterlab/apputils';
 
 import {
-  INotebookTracker
+  INotebookTracker,
+  NotebookActions
 } from '@jupyterlab/notebook';
 
 /**
@@ -50,10 +51,16 @@ const extension: JupyterLabPlugin<void> = {
         if (tracker.currentWidget.notebook.activeCell.model.metadata.get("hideCode") == "true") {
           app.commands.execute('notebook:hide-cell-code');
         } 
-        else if (tracker.currentWidget.notebook.activeCell.model.metadata.get("readOnly") == "true") {
+        if (tracker.currentWidget.notebook.activeCell.model.metadata.get("readOnly") == "true") {
           // sets CSS pointer-events to none and cursor to default to make cell read only. 
           tracker.currentWidget.notebook.activeCell.node.style.pointerEvents = "none";
           tracker.currentWidget.notebook.activeCell.node.style.cursor = "default";
+        }
+        if (tracker.currentWidget.notebook.activeCell.model.metadata.get("autoRun") == "true") {
+          // NotebookActions.run will run the currently active cell, so this is implictly using
+          // the activeCellIndex to pick which cell to run in the notebook.  The session refers
+          // to which python kernel to use to run the cell.
+          NotebookActions.run(tracker.currentWidget.notebook, tracker.currentWidget.session);
         }
         tracker.currentWidget.notebook.activeCellIndex++;
       }     
