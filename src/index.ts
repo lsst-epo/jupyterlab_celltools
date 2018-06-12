@@ -66,11 +66,6 @@ const extension: JupyterLabPlugin<void> = {
       }     
     }
 
-  // If the notebook changes, it runs. 
-  tracker.currentChanged.connect(() => { 
-     setTimeout(executeActions, 100);
-  });
-
   // When open a notebook is opened, it runs.
   tracker.widgetAdded.connect(() => {
      setTimeout(executeActions, 100);
