@@ -25,9 +25,9 @@ const extension: JupyterLabPlugin<void> = {
 
 
    function executeActions() {
-    // If the notebook isn't loaded by the time we get run,
+    // If the notebook or kernel isn't loaded by the time we get run,
     // reschedule us to run again.
-    if (tracker.currentWidget == null) {
+    if (tracker.currentWidget == null || !tracker.currentWidget.session.isReady) {
         console.log('Not ready to hide the code yet.');
         setTimeout(executeActions, 100);
         return;
