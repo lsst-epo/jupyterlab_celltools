@@ -53,9 +53,14 @@ const extension: JupyterLabPlugin<void> = {
         } 
         if (tracker.currentWidget.notebook.activeCell.model.metadata.get("readOnly") == "true") {
           // sets CSS pointer-events to none and cursor to default to make cell read only. 
-          tracker.currentWidget.notebook.activeCell.node.style.pointerEvents = "none";
-          tracker.currentWidget.notebook.activeCell.node.style.cursor = "default";
-        }
+          tracker.currentWidget.notebook.node.addEventListener('dblclick', function() {
+            console.log("Double-click disabled!");  
+            event.preventDefault();  
+            event.stopPropagation(); 
+            },  true
+           )
+          }
+         
         if (tracker.currentWidget.notebook.activeCell.model.metadata.get("autoRun") == "true") {
           // NotebookActions.run will run the currently active cell, so this is implictly using
           // the activeCellIndex to pick which cell to run in the notebook.  The session refers
